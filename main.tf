@@ -21,6 +21,16 @@ variable "tfe_organization" {
   default     = "hashicorp-v2"
 }
 
+variable "tfe_workspace_ids" {
+  description = "Mapping of workspace names to IDs, for easier use in policy sets."
+  type = "map"
+  default = {
+    "app-prod" = "ws-LbK9gZEL4beEw9A2"
+    "app-dev" = "ws-uMM93B6XrmCwh3Bj"
+    "app-staging" = "ws-Mp6tkwtspVNZ5DSf"
+  }
+}
+
 provider "tfe" {
   hostname = "${var.tfe_hostname}"
   token    = "${var.tfe_token}"
