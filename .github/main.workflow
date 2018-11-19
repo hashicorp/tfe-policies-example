@@ -9,7 +9,7 @@ workflow "Sentinel" {
 # }
 
 action "sentinel-test" {
-  uses = "thrashr888/sentinel-github-actions/test@v0.1"
+  uses = "thrashr888/sentinel-github-actions/test@v0.2"
 #   needs = "filter-to-pr-open-synced"
   secrets = ["GITHUB_TOKEN"]
   env = {
