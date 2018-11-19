@@ -1,5 +1,5 @@
-workflow "Terraform" {
-  resolves = "terraform-plan"
+workflow "Sentinel" {
+  resolves = "sentinel-test"
   on = "pull_request"
 }
 
@@ -8,7 +8,7 @@ action "filter-to-pr-open-synced" {
   args = ["action", "opened|synchronize"]
 }
 
-action "terraform-fmt" {
+action "sentinel-test" {
   uses = "thrashr888/sentinel-github-actions/test@v0.1"
   needs = "filter-to-pr-open-synced"
   secrets = ["GITHUB_TOKEN"]
