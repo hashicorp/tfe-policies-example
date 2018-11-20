@@ -50,6 +50,7 @@ resource "tfe_policy_set" "global" {
     "${tfe_sentinel_policy.aws-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
   ]
@@ -66,7 +67,6 @@ resource "tfe_policy_set" "production" {
 
   workspace_external_ids = [
     "${var.tfe_workspace_ids["app-prod"]}",
-    "${var.tfe_workspace_ids["app-staging"]}",
   ]
 }
 
@@ -139,9 +139,17 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
   enforce_mode = "soft-mandatory"
 }
 
+resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
+  name         = "aws-restrict-instance-type-default"
+  description  = "Limit AWS instances to approved list"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-instance-type-default.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
 resource "tfe_sentinel_policy" "azurerm-restrict-vm-size" {
   name         = "azurerm-restrict-vm-size"
-  description  = "Limit Azure instances to approved list (for prod infrastructure)"
+  description  = "Limit Azure instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./azurerm-restrict-vm-size.sentinel")}"
   enforce_mode = "soft-mandatory"
@@ -149,7 +157,7 @@ resource "tfe_sentinel_policy" "azurerm-restrict-vm-size" {
 
 resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
   name         = "gcp-restrict-machine-type"
-  description  = "Limit GCP instances to approved list (for prod infrastructure)"
+  description  = "Limit GCP instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./gcp-restrict-machine-type.sentinel")}"
   enforce_mode = "soft-mandatory"
