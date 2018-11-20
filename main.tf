@@ -59,7 +59,6 @@ resource "tfe_policy_set" "production" {
   name         = "production"
   description  = "Policies that should be enforced on production infrastructure."
   organization = "${var.tfe_organization}"
-  global       = false
 
   policy_ids = [
     "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
@@ -75,7 +74,6 @@ resource "tfe_policy_set" "development" {
   name         = "development"
   description  = "Policies that should be enforced on development or scratch infrastructure."
   organization = "${var.tfe_organization}"
-  global       = false
 
   policy_ids = [
     "${tfe_sentinel_policy.aws-restrict-instance-type-dev.id}",
