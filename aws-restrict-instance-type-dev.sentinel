@@ -1,11 +1,18 @@
 import "tfplan"
 
-# Get all AWS instances from all modules
+# Get all AWS instances from all modules - more robust for real-world use, but not
+# supported by Sentinel's current testing features.
+# get_aws_instances = func() {
+#     instances = []
+#     for tfplan.module_paths as path {
+#         instances += values(tfplan.module(path).resources.aws_instance) else []
+#     }
+#     return instances
+# }
+
+# Get all AWS instances in the root module only:
 get_aws_instances = func() {
-    instances = []
-    for tfplan.module_paths as path {
-        instances += values(tfplan.module(path).resources.aws_instance) else []
-    }
+    instances = values(tfplan.resources.aws_instance) else []
     return instances
 }
 
