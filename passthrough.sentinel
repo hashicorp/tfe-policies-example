@@ -1,2 +1,3 @@
-main = rule {
+main = rule 
+{
     true }
