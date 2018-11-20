@@ -22,7 +22,6 @@ action "sentinel-test" {
 
 action "terraform-fmt" {
   uses = "hashicorp/terraform-github-actions/fmt@v0.1"
-  needs = "filter-to-pr-open-synced"
   secrets = ["GITHUB_TOKEN"]
   env = {
     TF_ACTION_WORKING_DIR = "."
