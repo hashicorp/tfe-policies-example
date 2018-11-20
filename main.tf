@@ -23,11 +23,13 @@ variable "tfe_organization" {
 
 variable "tfe_workspace_ids" {
   description = "Mapping of workspace names to IDs, for easier use in policy sets."
-  type = "map"
+  type        = "map"
+
   default = {
-    "app-prod" = "ws-LbK9gZEL4beEw9A2"
-    "app-dev" = "ws-uMM93B6XrmCwh3Bj"
-    "app-staging" = "ws-Mp6tkwtspVNZ5DSf"
+    "app-prod"                = "ws-LbK9gZEL4beEw9A2"
+    "app-dev"                 = "ws-uMM93B6XrmCwh3Bj"
+    "app-staging"             = "ws-Mp6tkwtspVNZ5DSf"
+    "app-dev-sandbox-bennett" = "ws-s7jPpcQG4AGrSsTb"
   }
 }
 
@@ -37,6 +39,56 @@ provider "tfe" {
   version  = "~> 0.3"
 }
 
+resource "tfe_policy_set" "global" {
+  name         = "global"
+  description  = "Policies that should be enforced on ALL infrastructure."
+  organization = "${var.tfe_organization}"
+  global       = true
+
+  policy_ids = [
+    "${tfe_sentinel_policy.passthrough.id}",
+    "${tfe_sentinel_policy.aws-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
+    "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
+  ]
+}
+
+resource "tfe_policy_set" "production" {
+  name         = "production"
+  description  = "Policies that should be enforced on production infrastructure."
+  organization = "${var.tfe_organization}"
+  global       = false
+
+  policy_ids = [
+    "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
+  ]
+
+  workspace_external_ids = [
+    "${var.tfe_workspace_ids["app-prod"]}",
+    "${var.tfe_workspace_ids["app-staging"]}",
+  ]
+}
+
+resource "tfe_policy_set" "development" {
+  name         = "development"
+  description  = "Policies that should be enforced on development or scratch infrastructure."
+  organization = "${var.tfe_organization}"
+  global       = false
+
+  policy_ids = [
+    "${tfe_sentinel_policy.aws-restrict-instance-type-dev.id}",
+  ]
+
+  workspace_external_ids = [
+    "${var.tfe_workspace_ids["app-dev"]}",
+    "${var.tfe_workspace_ids["app-dev-sandbox-bennett"]}",
+  ]
+}
+
+# Test/experimental policies:
+
 resource "tfe_sentinel_policy" "passthrough" {
   name         = "passthrough"
   description  = "Just passing through! Always returns 'true'."
@@ -45,10 +97,62 @@ resource "tfe_sentinel_policy" "passthrough" {
   enforce_mode = "advisory"
 }
 
-resource "tfe_policy_set" "global" {
-  name         = "global"
-  description  = "This set has been created for you to maintain previous behavior. Feel free to re-organize your policies as you see fit. For more information about policy sets, see Terraform Enterprise's [Sentinel documentation](https://www.terraform.io/docs/enterprise/sentinel/manage-policies.html)."
+# Networking policies:
+
+resource "tfe_sentinel_policy" "aws-block-allow-all-cidr" {
+  name         = "aws-block-allow-all-cidr"
+  description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
-  global       = true
-  policy_ids   = ["${tfe_sentinel_policy.passthrough.id}"]
+  policy       = "${file("./aws-block-allow-all-cidr.sentinel")}"
+  enforce_mode = "hard-mandatory"
+}
+
+resource "tfe_sentinel_policy" "azurerm-block-allow-all-cidr" {
+  name         = "azurerm-block-allow-all-cidr"
+  description  = "Avoid nasty firewall mistakes (Azure version)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./azurerm-block-allow-all-cidr.sentinel")}"
+  enforce_mode = "hard-mandatory"
+}
+
+resource "tfe_sentinel_policy" "gcp-block-allow-all-cidr" {
+  name         = "gcp-block-allow-all-cidr"
+  description  = "Avoid nasty firewall mistakes (GCP version)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./gcp-block-allow-all-cidr.sentinel")}"
+  enforce_mode = "hard-mandatory"
+}
+
+# Compute instance policies:
+
+resource "tfe_sentinel_policy" "aws-restrict-instance-type-dev" {
+  name         = "aws-restrict-instance-type-dev"
+  description  = "Limit AWS instances to approved list (for dev infrastructure)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-instance-type-dev.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
+resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
+  name         = "aws-restrict-instance-type-prod"
+  description  = "Limit AWS instances to approved list (for prod infrastructure)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-instance-type-prod.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
+resource "tfe_sentinel_policy" "azurerm-restrict-vm-size" {
+  name         = "azurerm-restrict-vm-size"
+  description  = "Limit Azure instances to approved list (for prod infrastructure)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./azurerm-restrict-vm-size.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
+resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
+  name         = "gcp-restrict-machine-type"
+  description  = "Limit GCP instances to approved list (for prod infrastructure)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./gcp-restrict-machine-type.sentinel")}"
+  enforce_mode = "soft-mandatory"
 }
