@@ -1,4 +1,7 @@
 {
+  "test": {
+    "main": false
+  },
   "mock": {
     "tfplan": {
       "resources": {
