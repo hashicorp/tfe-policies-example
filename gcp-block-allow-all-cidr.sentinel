@@ -1,6 +1,5 @@
 import "tfplan"
 
-
 disallowed_cidr_block = "0.0.0.0/0"
 
 block_allow_all = rule {

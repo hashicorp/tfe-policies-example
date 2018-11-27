@@ -12,8 +12,8 @@ import "tfplan"
 
 # Get all AWS instances in the root module only:
 get_aws_instances = func() {
-    instances = values(tfplan.resources.aws_instance) else []
-    return instances
+	instances = values(tfplan.resources.aws_instance) else []
+	return instances
 }
 
 # Allowed Types
