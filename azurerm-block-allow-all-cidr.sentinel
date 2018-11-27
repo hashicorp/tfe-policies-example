@@ -6,7 +6,7 @@ disallowed_cidr_blocks = [
 ]
 
 block_allow_all = rule {
-	all tfplan.resources.azurerm_network_security_group as _name, instances {
+	all (tfplan.resources.azurerm_network_security_group else {}) as _name, instances {
 		all instances as _count, sg {
 			all sg.applied.security_rule as _index, sr {
 				(sr.source_address_prefix not in disallowed_cidr_blocks) or sr.access == "Deny"
