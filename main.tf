@@ -30,6 +30,7 @@ variable "tfe_workspace_ids" {
     "app-dev"                 = "ws-uMM93B6XrmCwh3Bj"
     "app-staging"             = "ws-Mp6tkwtspVNZ5DSf"
     "app-dev-sandbox-bennett" = "ws-s7jPpcQG4AGrSsTb"
+    "tfe-policies"            = "ws-Vt9UKZE5ejqGMp94"
   }
 }
 
@@ -85,6 +86,20 @@ resource "tfe_policy_set" "development" {
   ]
 }
 
+resource "tfe_policy_set" "sentinel" {
+  name         = "sentinel"
+  description  = "Policies that watch the watchman. Enforced only on the workspace that manages policies."
+  organization = "${var.tfe_organization}"
+
+  policy_ids = [
+    "${tfe_sentinel_policy.tfe_policies_only.id}",
+  ]
+
+  workspace_external_ids = [
+    "${var.tfe_workspace_ids["tfe-policies"]}",
+  ]
+}
+
 # Test/experimental policies:
 
 resource "tfe_sentinel_policy" "passthrough" {
@@ -93,6 +108,16 @@ resource "tfe_sentinel_policy" "passthrough" {
   organization = "${var.tfe_organization}"
   policy       = "${file("./passthrough.sentinel")}"
   enforce_mode = "advisory"
+}
+
+# Sentinel management policies:
+
+resource "tfe_sentinel_policy" "tfe_policies_only" {
+  name         = "tfe_policies_only"
+  description  = "The Terraform config that manages Sentinel policies must not use the authenticated tfe provider to manage non-Sentinel resources."
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./tfe_policies_only.sentinel")}"
+  enforce_mode = "hard-mandatory"
 }
 
 # Networking policies:
