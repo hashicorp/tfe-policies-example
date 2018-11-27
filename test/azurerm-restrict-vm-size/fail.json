@@ -7,15 +7,11 @@
   "mock": {
     "tfplan": {
       "resources": {
-        "aws_instance": {
-          "ok-in-dev": {
+        "azurerm_virtual_machine": {
+          "always-bad": {
             "0": {
               "applied": {
-                "ami": "ami-0afae182eed9d2b46",
-                "instance_type": "t2.micro",
-                "tags": {
-                  "Name": "HelloWorld"
-                }
+                "vm_size": "Standard_D3"
               }
             }
           }
