@@ -4,7 +4,7 @@ workflow "Sentinel" {
 }
 
 action "sentinel-test" {
-  uses = "thrashr888/sentinel-github-actions/test@v0.4"
+  uses = "thrashr888/sentinel-github-actions/test@v0.5"
   secrets = ["GITHUB_TOKEN"]
   env = {
     STL_ACTION_WORKING_DIR = "."
