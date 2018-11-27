@@ -30,8 +30,8 @@ aws_instances = get_aws_instances()
 
 # Rule to restrict instance types
 instance_type_allowed = rule {
-	all aws_instances as _, instances {
-		all instances as index, r {
+	all aws_instances as _index, instances {
+		all instances as _count, r {
 			r.applied.instance_type in allowed_types
 		}
 	}

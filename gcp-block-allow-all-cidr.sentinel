@@ -3,8 +3,8 @@ import "tfplan"
 disallowed_cidr_block = "0.0.0.0/0"
 
 block_allow_all = rule {
-	all tfplan.resources.google_compute_firewall as _, instances {
-		all instances as _, fw {
+	all tfplan.resources.google_compute_firewall as _name, instances {
+		all instances as _count, fw {
 			disallowed_cidr_block not in fw.applied.source_ranges[0]
 		}
 	}

@@ -7,8 +7,8 @@ allowed_machine_types = [
 ]
 
 machine_type_allowed = rule {
-	all tfplan.resources.google_compute_instance as _, instances {
-		all instances as index, r {
+	all tfplan.resources.google_compute_instance as _name, instances {
+		all instances as _count, r {
 			r.applied.machine_type in allowed_machine_types
 		}
 	}
