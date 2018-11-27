@@ -1,0 +1,13 @@
+{
+  "mock": {
+    "tfplan": {
+      "resources": {
+        "aws_security_group": [
+          {
+            "foo": { "applied": { "ingress": [{ "cidr_blocks": ["1.0.0.0/0"] }] } }
+          }
+        ]
+      }
+    }
+  }
+}
