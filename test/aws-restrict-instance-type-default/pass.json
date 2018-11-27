@@ -1,9 +1,6 @@
 {
   "global":{},
   "test": {
-    "main": true
-  },
-  "test": {
     "main": true,
     "instance_type_allowed": true
   },
