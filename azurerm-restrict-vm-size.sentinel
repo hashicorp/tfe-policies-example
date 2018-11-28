@@ -19,8 +19,8 @@ allowed_vm_sizes = [
 ]
 
 vm_size_allowed = rule {
-	all tfplan.resources.azurerm_virtual_machine as _, instances {
-		all instances as index, r {
+	all (tfplan.resources.azurerm_virtual_machine else {}) as _name, instances {
+		all instances as _count, r {
 			r.applied.vm_size in allowed_vm_sizes
 		}
 	}

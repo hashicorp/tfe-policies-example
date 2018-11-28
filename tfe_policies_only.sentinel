@@ -1,45 +1,45 @@
 import "tfplan"
 
 no_tfe_organization = rule {
-    length(tfplan.resources.tfe_organization else {}) == 0
+	length(tfplan.resources.tfe_organization else {}) == 0
 }
 
 no_tfe_organization_token = rule {
-    length(tfplan.resources.tfe_organization_token else {}) == 0
+	length(tfplan.resources.tfe_organization_token else {}) == 0
 }
 
 no_tfe_ssh_key = rule {
-    length(tfplan.resources.tfe_ssh_key else {}) == 0
+	length(tfplan.resources.tfe_ssh_key else {}) == 0
 }
 
 no_tfe_team = rule {
-    length(tfplan.resources.tfe_team else {}) == 0
+	length(tfplan.resources.tfe_team else {}) == 0
 }
 
 no_tfe_team_access = rule {
-    length(tfplan.resources.tfe_team_access else {}) == 0
+	length(tfplan.resources.tfe_team_access else {}) == 0
 }
 
 no_tfe_team_member = rule {
-    length(tfplan.resources.tfe_team_member else {}) == 0
+	length(tfplan.resources.tfe_team_member else {}) == 0
 }
 
 no_tfe_team_members = rule {
-    length(tfplan.resources.tfe_team_members else {}) == 0
+	length(tfplan.resources.tfe_team_members else {}) == 0
 }
 
 no_tfe_team_token = rule {
-    length(tfplan.resources.tfe_team_token else {}) == 0
+	length(tfplan.resources.tfe_team_token else {}) == 0
 }
 
 no_tfe_variable = rule {
-    length(tfplan.resources.tfe_variable else {}) == 0
+	length(tfplan.resources.tfe_variable else {}) == 0
 }
 
 no_tfe_workspace = rule {
-    length(tfplan.resources.tfe_workspace else {}) == 0
+	length(tfplan.resources.tfe_workspace else {}) == 0
 }
 
 main = rule {
-    no_tfe_organization and no_tfe_organization_token and no_tfe_ssh_key and no_tfe_team and no_tfe_team_access and no_tfe_team_member and no_tfe_team_members and no_tfe_team_token and no_tfe_variable and no_tfe_workspace
+	no_tfe_organization and no_tfe_organization_token and no_tfe_ssh_key and no_tfe_team and no_tfe_team_access and no_tfe_team_member and no_tfe_team_members and no_tfe_team_token and no_tfe_variable and no_tfe_workspace
 }

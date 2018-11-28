@@ -2,11 +2,15 @@
   "mock": {
     "tfplan": {
       "resources": {
-        "google_compute_instance": [
-          {
-            "foo": { "applied": { "machine_type": "n1-standard-1" } }
+        "google_compute_instance": {
+          "foo": {
+            "0": {
+              "applied": {
+                "machine_type": "n1-standard-1"
+              }
+            }
           }
-        ]
+        }
       }
     }
   }
