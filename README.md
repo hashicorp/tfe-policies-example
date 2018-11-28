@@ -38,3 +38,8 @@ Given that this repo is an example, you can use these files to set up a new work
 
 The next run of your workspace should be policy checked by `passthrough.sentinel`!
 
+
+# Github Actions
+
+This repo contains [an example](.github/main.workflow) of running `sentinel test` against your sentinel files as PR "checks". It uses a third-party action called `thrashr888/sentinel-github-actions/test` to run the tests. After submitting a PR, you'll see any test errors show up as a comment on the PR.
+
