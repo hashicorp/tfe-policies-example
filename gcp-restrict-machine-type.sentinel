@@ -1,13 +1,33 @@
 import "tfplan"
 
+# Get an array of resource bodies of the given type (each body indexed by count),
+# collected from all modules. (Returns an empty array if none found).
+# Outline of structure:
+# [ {"0": {"applied": {"instance_type": "..."}, "diff": {...}}, "1": {...}},
+#   {"0": {...}},
+#   ... ]
+get_resources = func(type) {
+	instances = []
+	if length(tfplan.module_paths else []) > 0 { # always true in the real tfplan import
+		for tfplan.module_paths as path {
+			instances += values(tfplan.module(path).resources[type]) else []
+		}
+	} else { # fallback for tests
+		instances += values(tfplan.resources[type]) else []
+	}
+	return instances
+}
+
 allowed_machine_types = [
 	"n1-standard-1",
 	"n1-standard-2",
 	"n1-standard-4",
 ]
 
+compute_instances = get_resources("google_compute_instance")
+
 machine_type_allowed = rule {
-	all (tfplan.resources.google_compute_instance else {}) as _name, instances {
+	all compute_instances as _index, instances {
 		all instances as _count, r {
 			r.applied.machine_type in allowed_machine_types
 		}
