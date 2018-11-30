@@ -37,7 +37,7 @@ variable "tfe_workspace_ids" {
 provider "tfe" {
   hostname = "${var.tfe_hostname}"
   token    = "${var.tfe_token}"
-  version  = "~> 0.3"
+  version  = "~> 0.4"
 }
 
 resource "tfe_policy_set" "global" {
