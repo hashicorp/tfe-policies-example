@@ -1,45 +1,43 @@
 import "tfplan"
 
-no_tfe_organization = rule {
-	length(tfplan.resources.tfe_organization else {}) == 0
+# Get an array of resource bodies of the given type (each body indexed by count),
+# collected from all modules. (Returns an empty array if none found).
+# Outline of structure:
+# [ {"0": {"applied": {"instance_type": "..."}, "diff": {...}}, "1": {...}},
+#   {"0": {...}},
+#   ... ]
+get_resources = func(type) {
+	instances = []
+	if length(tfplan.module_paths else []) > 0 { # always true in the real tfplan import
+		for tfplan.module_paths as path {
+			instances += values(tfplan.module(path).resources[type]) else []
+		}
+	} else { # fallback for tests
+		instances += values(tfplan.resources[type]) else []
+	}
+	return instances
 }
 
-no_tfe_organization_token = rule {
-	length(tfplan.resources.tfe_organization_token else {}) == 0
-}
-
-no_tfe_ssh_key = rule {
-	length(tfplan.resources.tfe_ssh_key else {}) == 0
-}
-
-no_tfe_team = rule {
-	length(tfplan.resources.tfe_team else {}) == 0
-}
-
-no_tfe_team_access = rule {
-	length(tfplan.resources.tfe_team_access else {}) == 0
-}
-
-no_tfe_team_member = rule {
-	length(tfplan.resources.tfe_team_member else {}) == 0
-}
-
-no_tfe_team_members = rule {
-	length(tfplan.resources.tfe_team_members else {}) == 0
-}
-
-no_tfe_team_token = rule {
-	length(tfplan.resources.tfe_team_token else {}) == 0
-}
-
-no_tfe_variable = rule {
-	length(tfplan.resources.tfe_variable else {}) == 0
-}
-
-no_tfe_workspace = rule {
-	length(tfplan.resources.tfe_workspace else {}) == 0
-}
+no_tfe_organization = rule { length(get_resources("tfe_organization")) == 0 }
+no_tfe_organization_token = rule { length(get_resources("tfe_organization_token")) == 0 }
+no_tfe_ssh_key = rule { length(get_resources("tfe_ssh_key")) == 0 }
+no_tfe_team = rule { length(get_resources("tfe_team")) == 0 }
+no_tfe_team_access = rule { length(get_resources("tfe_team_access")) == 0 }
+no_tfe_team_member = rule { length(get_resources("tfe_team_member")) == 0 }
+no_tfe_team_members = rule { length(get_resources("tfe_team_members")) == 0 }
+no_tfe_team_token = rule { length(get_resources("tfe_team_token")) == 0 }
+no_tfe_variable = rule { length(get_resources("tfe_variable")) == 0 }
+no_tfe_workspace = rule { length(get_resources("tfe_workspace")) == 0 }
 
 main = rule {
-	no_tfe_organization and no_tfe_organization_token and no_tfe_ssh_key and no_tfe_team and no_tfe_team_access and no_tfe_team_member and no_tfe_team_members and no_tfe_team_token and no_tfe_variable and no_tfe_workspace
+	no_tfe_organization and
+	no_tfe_organization_token and
+	no_tfe_ssh_key and
+	no_tfe_team and
+	no_tfe_team_access and
+	no_tfe_team_member and
+	no_tfe_team_members and
+	no_tfe_team_token and
+	no_tfe_variable and
+	no_tfe_workspace
 }

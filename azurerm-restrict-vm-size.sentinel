@@ -1,5 +1,23 @@
 import "tfplan"
 
+# Get an array of resource bodies of the given type (each body indexed by count),
+# collected from all modules. (Returns an empty array if none found).
+# Outline of structure:
+# [ {"0": {"applied": {"instance_type": "..."}, "diff": {...}}, "1": {...}},
+#   {"0": {...}},
+#   ... ]
+get_resources = func(type) {
+	instances = []
+	if length(tfplan.module_paths else []) > 0 { # always true in the real tfplan import
+		for tfplan.module_paths as path {
+			instances += values(tfplan.module(path).resources[type]) else []
+		}
+	} else { # fallback for tests
+		instances += values(tfplan.resources[type]) else []
+	}
+	return instances
+}
+
 # comparison is case-sensitive
 # so including both cases for "v"
 # since we have seen both used
@@ -18,8 +36,10 @@ allowed_vm_sizes = [
 	"Standard_D2",
 ]
 
+virtual_machines = get_resources("azurerm_virtual_machine")
+
 vm_size_allowed = rule {
-	all (tfplan.resources.azurerm_virtual_machine else {}) as _name, instances {
+	all virtual_machines as _index, instances {
 		all instances as _count, r {
 			r.applied.vm_size in allowed_vm_sizes
 		}
