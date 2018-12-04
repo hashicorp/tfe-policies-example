@@ -18,7 +18,7 @@ variable "tfe_hostname" {
 
 variable "tfe_organization" {
   description = "The TFE organization to apply your changes to."
-  default     = "hashicorp-v2"
+  default     = "example_corp"
 }
 
 variable "tfe_workspace_ids" {
@@ -37,7 +37,7 @@ variable "tfe_workspace_ids" {
 provider "tfe" {
   hostname = "${var.tfe_hostname}"
   token    = "${var.tfe_token}"
-  version  = "~> 0.3"
+  version  = "~> 0.4"
 }
 
 resource "tfe_policy_set" "global" {
