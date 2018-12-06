@@ -1,30 +1,42 @@
 import "tfplan"
 
-# Flatten tfplan's nested resource maps:
-#   {"name": {"0": {"applied": {...}, "diff": {...} }, "1": {...}}, "name": {...}}
-# ...to an array of resource bodies:
-#   [{"applied": {...}, "diff": {...}}, {"applied": {...}, "diff": {...}}, ...]
-get_resource_bodies = func(named_and_counted_resources) {
-	result = []
-	for named_and_counted_resources as _, instances {
-		for instances as _, body {
-			append(result, body)
-		}
-	}
-	return result
-}
-
 # Get an array of all resources of the given type (or an empty array).
 get_resources = func(type) {
-	resources = []
 	if length(tfplan.module_paths else []) > 0 { # always true in the real tfplan import
-		for tfplan.module_paths as path {
-			nested_resources = tfplan.module(path).resources[type] else {}
-			resources += get_resource_bodies(nested_resources)
-		}
+		return get_resources_all_modules(type)
 	} else { # fallback for tests
-		nested_resources = tfplan.resources[type] else {}
-		resources += get_resource_bodies(nested_resources)
+		return get_resources_root_only(type)
+	}
+}
+
+get_resources_root_only = func(type) {
+	resources = []
+	named_and_counted_resources = tfplan.resources[type] else {}
+	# Get resource bodies out of nested resource maps, from:
+	# {"name": {"0": {"applied": {...}, "diff": {...} }, "1": {...}}, "name": {...}}
+	# to:
+	# [{"applied": {...}, "diff": {...}}, {"applied": {...}, "diff": {...}}, ...]
+	for named_and_counted_resources as _, instances {
+		for instances as _, body {
+			append(resources, body)
+		}
+	}
+	return resources
+}
+
+get_resources_all_modules = func(type) {
+	resources = []
+	for tfplan.module_paths as path {
+		named_and_counted_resources = tfplan.module(path).resources[type] else {}
+		# Get resource bodies out of nested resource maps, from:
+		# {"name": {"0": {"applied": {...}, "diff": {...} }, "1": {...}}, "name": {...}}
+		# to:
+		# [{"applied": {...}, "diff": {...}}, {"applied": {...}, "diff": {...}}, ...]
+		for named_and_counted_resources as _, instances {
+			for instances as _, body {
+				append(resources, body)
+			}
+		}
 	}
 	return resources
 }
