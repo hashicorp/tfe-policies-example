@@ -1,21 +1,32 @@
 import "tfplan"
 
-# Get an array of resource bodies of the given type (each body indexed by count),
-# collected from all modules. (Returns an empty array if none found).
-# Outline of structure:
-# [ {"0": {"applied": {"instance_type": "..."}, "diff": {...}}, "1": {...}},
-#   {"0": {...}},
-#   ... ]
+# Flatten tfplan's nested resource maps:
+#   {"name": {"0": {"applied": {...}, "diff": {...} }, "1": {...}}, "name": {...}}
+# ...to an array of resource bodies:
+#   [{"applied": {...}, "diff": {...}}, {"applied": {...}, "diff": {...}}, ...]
+get_resource_bodies = func(named_and_counted_resources) {
+	result = []
+	for named_and_counted_resources as _, instances {
+		for instances as _, body {
+			append(result, body)
+		}
+	}
+	return result
+}
+
+# Get an array of all resources of the given type (or an empty array).
 get_resources = func(type) {
-	instances = []
+	resources = []
 	if length(tfplan.module_paths else []) > 0 { # always true in the real tfplan import
 		for tfplan.module_paths as path {
-			instances += values(tfplan.module(path).resources[type]) else []
+			nested_resources = tfplan.module(path).resources[type] else {}
+			resources += get_resource_bodies(nested_resources)
 		}
 	} else { # fallback for tests
-		instances += values(tfplan.resources[type]) else []
+		nested_resources = tfplan.resources[type] else {}
+		resources += get_resource_bodies(nested_resources)
 	}
-	return instances
+	return resources
 }
 
 allowed_machine_types = [
@@ -24,13 +35,9 @@ allowed_machine_types = [
 	"n1-standard-4",
 ]
 
-compute_instances = get_resources("google_compute_instance")
-
 machine_type_allowed = rule {
-	all compute_instances as _index, instances {
-		all instances as _count, r {
-			r.applied.machine_type in allowed_machine_types
-		}
+	all get_resources("google_compute_instance") as r {
+		r.applied.machine_type in allowed_machine_types
 	}
 }
 
