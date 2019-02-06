@@ -1,43 +1,42 @@
 # TFE Policies Example
 
-This repo provides an example of using Sentinel policies via VCS in Terraform Enterprise.
+This repo demonstrates a complete VCS-backed Sentinel workflow for Terraform Enterprise (TFE). It includes the following components:
 
+- Some example Sentinel policies that define rules about Terraform runs.
+- Sentinel test configurations for those policies.
+- A Terraform configuration to sync those policies with Terraform Enterprise, group them into sets, and enforce them on workspaces.
+
+It is intended to be combined with the following:
+
+- A Terraform Enterprise workspace, which runs Terraform to update your Sentinel policies whenever the repo changes.
+- A lightweight CI solution (like GitHub Actions), for continuously testing your Sentinel code.
 
 ## Using with TFE
 
-You can run a remote plan to test changes to Terraform config in `main.tf`. You'll to set the `TFE_TOKEN` environment variable. The plan will show the output for the _previous_ version of any policies associated with your workspace.
+Fork this repo, then create a Terraform Enterprise workspace linked to your fork. Set values for the following Terraform variables:
 
-    > export TFE_TOKEN='<YOUR TFE TOKEN>'
-    > terraform init
-    > terraform plan
+- `tfe_organization` — the name of your TFE organization.
+- `tfe_token` (SENSITIVE) — the organization token or owners team token for your organization.
+- `tfe_hostname` (optional; defaults to `app.terraform.io`) — the hostname of your TFE instance.
 
-After you check in your changes. In your VCS's pull request, you'll again see a check using the _previous_ version of the sentinel policies.
+Add and remove Sentinel policies as desired, and edit `main.tf` to ensure your policies are enforced on the correct workspaces. Queue an initial run to set up your policies, then continue to iterate on the policy repo and approve Terraform runs as needed.
 
-When the PR is merged, you'll see a merge commit run in the workspace. Again, this uses only the _previous_ version of your sentinel policies. Once confirmed and applied, runs will use the new sentinel policy you just merged.
+For more details, see [Managing Sentinel Policies with Version Control](https://www.terraform.io/docs/enterprise/sentinel/integrate-vcs.html).
 
+## Testing Sentinel Policies Locally
 
-## Testing your Sentinel Policies Locally
+Run all tests:
 
     > sentinel test
-    > sentinel apply passthrough.sentinel
+
+Manually apply a policy using a specific test config:
+
+    > sentinel apply -config ./test/aws-restrict-instance-type-prod/dev-not-prod.json aws-restrict-instance-type-prod.sentinel
+
+(This example results in a policy failure, as intended; see the `"test"` property of any test config for the expected behavior.)
 
 
-# A Workspace from Scratch
+## Testing Sentinel Policies with Github Actions
 
-Given that this repo is an example, you can use these files to set up a new workspace instead of just the ["Using with TFE"](#using-with-tfe) directions above.
-
-- Copy the files from this repo
-- `terraform init; terraform plan` will create the workspace (if it doesn't already exist) and make sure everything is configured properly.
-- Switch the organization and workspace names in `main.tf`.
-- Commit and push to your new repo
-- Configure the VCS Settings in your new TFE Workspace
-- Add your TFE Token to a new `tfe_token` variable (ex. https://app.terraform.io/app/example-org/tfe-policies-example/variables)
-- Queue a run and apply it
-
-The next run of your workspace should be policy checked by `passthrough.sentinel` and others found in this repo!
-
-
-# Github Actions
-
-This repo contains [an example](.github/main.workflow) of running `sentinel test` against your sentinel files as PR "checks". It uses a third-party action called `thrashr888/sentinel-github-actions/test` to run the tests. After submitting a PR, you'll see any test errors show up as a comment on the PR.
+This repo contains [an example](.github/main.workflow) of running `sentinel test` against your sentinel files as PR checks. It uses a third-party action called `thrashr888/sentinel-github-actions/test` to run the tests. After submitting a PR, you'll see any test errors show up as a comment on the PR.
 

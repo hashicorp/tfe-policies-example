@@ -21,23 +21,19 @@ variable "tfe_organization" {
   default     = "example_corp"
 }
 
-variable "tfe_workspace_ids" {
-  description = "Mapping of workspace names to IDs, for easier use in policy sets."
-  type        = "map"
-
-  default = {
-    "app-prod"                = "ws-LbK9gZEL4beEw9A2"
-    "app-dev"                 = "ws-uMM93B6XrmCwh3Bj"
-    "app-staging"             = "ws-Mp6tkwtspVNZ5DSf"
-    "app-dev-sandbox-bennett" = "ws-s7jPpcQG4AGrSsTb"
-    "tfe-policies"            = "ws-Vt9UKZE5ejqGMp94"
-  }
-}
-
 provider "tfe" {
   hostname = "${var.tfe_hostname}"
   token    = "${var.tfe_token}"
-  version  = "~> 0.4"
+  version  = "~> 0.6"
+}
+
+data "tfe_workspace_ids" "all" {
+  names        = ["*"]
+  organization = "${var.tfe_organization}"
+}
+
+locals {
+  workspaces = "${data.tfe_workspace_ids.all.external_ids}" # map of names to IDs
 }
 
 resource "tfe_policy_set" "global" {
@@ -67,7 +63,7 @@ resource "tfe_policy_set" "production" {
   ]
 
   workspace_external_ids = [
-    "${var.tfe_workspace_ids["app-prod"]}",
+    "${local.workspaces["app-prod"]}",
   ]
 }
 
@@ -81,8 +77,8 @@ resource "tfe_policy_set" "development" {
   ]
 
   workspace_external_ids = [
-    "${var.tfe_workspace_ids["app-dev"]}",
-    "${var.tfe_workspace_ids["app-dev-sandbox-bennett"]}",
+    "${local.workspaces["app-dev"]}",
+    "${local.workspaces["app-dev-sandbox-bennett"]}",
   ]
 }
 
@@ -96,7 +92,7 @@ resource "tfe_policy_set" "sentinel" {
   ]
 
   workspace_external_ids = [
-    "${var.tfe_workspace_ids["tfe-policies"]}",
+    "${local.workspaces["tfe-policies"]}",
   ]
 }
 

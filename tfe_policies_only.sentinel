@@ -41,6 +41,7 @@ get_resources_all_modules = func(type) {
 	return resources
 }
 
+no_tfe_oauth_client = rule { length(get_resources("tfe_oauth_client")) == 0 }
 no_tfe_organization = rule { length(get_resources("tfe_organization")) == 0 }
 no_tfe_organization_token = rule { length(get_resources("tfe_organization_token")) == 0 }
 no_tfe_ssh_key = rule { length(get_resources("tfe_ssh_key")) == 0 }
@@ -53,6 +54,7 @@ no_tfe_variable = rule { length(get_resources("tfe_variable")) == 0 }
 no_tfe_workspace = rule { length(get_resources("tfe_workspace")) == 0 }
 
 main = rule {
+	no_tfe_oauth_client and
 	no_tfe_organization and
 	no_tfe_organization_token and
 	no_tfe_ssh_key and
