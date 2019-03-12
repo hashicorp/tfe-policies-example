@@ -185,11 +185,19 @@ resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
   enforce_mode = "soft-mandatory"
 }
 
-# Module Policies
+# Policy that requires modules to come from Private Module Registry
+data "template_file" "require-modules-from-pmr" {
+  template = "${file("./require-modules-from-pmr.template")}"
+
+  vars {
+    organization = "${var.tfe_organization}"
+  }
+}
+
 resource "tfe_sentinel_policy" "require-modules-from-pmr" {
   name         = "require-modules-from-pmr"
   description  = "Require all modules to come from the Private Module Registy of the current org"
   organization = "${var.tfe_organization}"
-  policy       = "${file("./require-modules-from-pmr.sentinel")}"
+  policy       = "${data.template_file.require-modules-from-pmr.rendered}"
   enforce_mode = "hard-mandatory"
 } 
