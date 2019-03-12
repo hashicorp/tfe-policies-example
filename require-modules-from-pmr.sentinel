@@ -2,7 +2,7 @@ import "tfconfig"
 import "strings"
 
 # Require all modules directly under root module
-# to come from PMR
+# to come from TFE private module registry (PMR)
 require_modules_from_pmr = rule { 
   all tfconfig.modules as _, m {
     print("source: ", m.source) and
