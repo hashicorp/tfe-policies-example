@@ -6,7 +6,7 @@ import "strings"
 require_modules_from_pmr = rule { 
   all tfconfig.modules as _, m {
     print("source: ", m.source) and
-    strings.has_prefix(m.source, "app.terraform.io/<OurOrganization>")
+    strings.has_prefix(m.source, "app.terraform.io/OurOrganization")
   }
 }
   

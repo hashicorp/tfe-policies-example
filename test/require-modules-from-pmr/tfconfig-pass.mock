@@ -7,7 +7,7 @@ _root = {
 				"location":            "${var.location}",
 				"resource_group_name": "${var.windows_dns_prefix}-rc",
 			},
-			"source":  "app.terraform.io/RSBST/network/azurerm",
+			"source":  "app.terraform.io/OurOrganization/network/azurerm",
 			"version": "1.1.1",
 		},
 		"windowsserver": {
@@ -22,7 +22,7 @@ _root = {
 				"vm_os_simple":        "WindowsServer",
 				"vnet_subnet_id":      "${module.network.vnet_subnets[0]}",
 			},
-			"source":  "app.terraform.io/RSBST/compute/azurerm",
+			"source":  "app.terraform.io/OurOrganization/compute/azurerm",
 			"version": "1.1.5",
 		},
 	},
