@@ -1,0 +1,8 @@
+{
+  "mock": {
+    "tfconfig": "tfconfig-pass.mock"
+  },
+  "test": {
+    "main": true
+  }
+}
