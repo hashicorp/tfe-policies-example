@@ -11,6 +11,8 @@ It is intended to be combined with the following:
 - A Terraform Enterprise workspace, which runs Terraform to update your Sentinel policies whenever the repo changes.
 - A lightweight CI solution (like GitHub Actions), for continuously testing your Sentinel code.
 
+> **See also:** This repo shows an end-to-end workflow with many parts, and uses a small number of Sentinel policies to keep things simple. If you'd rather see a wider range of how to govern specific kinds of infrastructure with Sentinel policies, see the [example policies in the hashicorp/terraform-guides repo](https://github.com/hashicorp/terraform-guides/tree/master/governance).
+
 ## Using with TFE
 
 Fork this repo, then create a Terraform Enterprise workspace linked to your fork. Set values for the following Terraform variables:
