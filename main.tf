@@ -191,6 +191,7 @@ data "template_file" "require-modules-from-pmr" {
 
   vars {
     organization = "${var.tfe_organization}"
+    hostname = "${var.tfe_hostname}"
   }
 }
 
