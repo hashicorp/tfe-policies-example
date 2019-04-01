@@ -187,11 +187,11 @@ resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
 
 # Policy that requires modules to come from Private Module Registry
 data "template_file" "require-modules-from-pmr" {
-  template = "${file("./require-modules-from-pmr.template")}"
+  template = "${file("./require-modules-from-pmr.sentinel")}"
 
   vars {
-    organization = "${var.tfe_organization}"
     hostname = "${var.tfe_hostname}"
+    organization = "${var.tfe_organization}"
   }
 }
 

@@ -15,9 +15,9 @@ It is intended to be combined with the following:
 
 Fork this repo, then create a Terraform Enterprise workspace linked to your fork. Set values for the following Terraform variables:
 
+- `tfe_hostname` (optional; defaults to `app.terraform.io`) — the hostname of your TFE instance.
 - `tfe_organization` — the name of your TFE organization.
 - `tfe_token` (SENSITIVE) — the organization token or owners team token for your organization.
-- `tfe_hostname` (optional; defaults to `app.terraform.io`) — the hostname of your TFE instance.
 
 Add and remove Sentinel policies as desired, and edit `main.tf` to ensure your policies are enforced on the correct workspaces. Queue an initial run to set up your policies, then continue to iterate on the policy repo and approve Terraform runs as needed.
 

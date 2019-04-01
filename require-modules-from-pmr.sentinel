@@ -1,12 +1,22 @@
 import "tfconfig"
 import "strings"
 
+# Note that this is a template fed to main.tf
+
+# Set module_prefix
+module_prefix = "${hostname}/${organization}"
+if strings.has_prefix(module_prefix, "$") { 
+  # template wasn't evaluated, probably in testing
+  # Edit the following line to set TFE server and org for testing
+  module_prefix = "app.terraform.io/OurOrganization"
+}
+
 # Require all modules directly under root module
 # to come from TFE private module registry (PMR)
 require_modules_from_pmr = rule { 
   all tfconfig.modules as _, m {
     print("source: ", m.source) and
-    strings.has_prefix(m.source, "app.terraform.io/OurOrganization")
+    strings.has_prefix(m.source, module_prefix)
   }
 }
   
