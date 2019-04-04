@@ -50,6 +50,7 @@ resource "tfe_policy_set" "global" {
     "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
+    "${tfe_sentinel_policy.require-modules-from-pmr.id}",
   ]
 }
 
@@ -183,3 +184,21 @@ resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
   policy       = "${file("./gcp-restrict-machine-type.sentinel")}"
   enforce_mode = "soft-mandatory"
 }
+
+# Policy that requires modules to come from Private Module Registry
+data "template_file" "require-modules-from-pmr" {
+  template = "${file("./require-modules-from-pmr.sentinel")}"
+
+  vars {
+    hostname = "${var.tfe_hostname}"
+    organization = "${var.tfe_organization}"
+  }
+}
+
+resource "tfe_sentinel_policy" "require-modules-from-pmr" {
+  name         = "require-modules-from-pmr"
+  description  = "Require all modules to come from the Private Module Registy of the current org"
+  organization = "${var.tfe_organization}"
+  policy       = "${data.template_file.require-modules-from-pmr.rendered}"
+  enforce_mode = "hard-mandatory"
+} 
