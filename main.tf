@@ -1,7 +1,9 @@
 terraform {
   backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "hashicorp-v2"
+    hostname = "app.terraform.io"
+
+    #organization = "hashicorp-v2"
+    organization = "ppresto_ptfe"
 
     workspaces {
       name = "tfe-policies-example"
@@ -93,7 +95,7 @@ resource "tfe_policy_set" "sentinel" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["tfe-policies"]}",
+    "${local.workspaces["tfe-policies-example"]}",
   ]
 }
 
@@ -190,7 +192,7 @@ data "template_file" "require-modules-from-pmr" {
   template = "${file("./require-modules-from-pmr.sentinel")}"
 
   vars {
-    hostname = "${var.tfe_hostname}"
+    hostname     = "${var.tfe_hostname}"
     organization = "${var.tfe_organization}"
   }
 }
@@ -201,4 +203,4 @@ resource "tfe_sentinel_policy" "require-modules-from-pmr" {
   organization = "${var.tfe_organization}"
   policy       = "${data.template_file.require-modules-from-pmr.rendered}"
   enforce_mode = "hard-mandatory"
-} 
+}
