@@ -66,36 +66,7 @@ resource "tfe_policy_set" "production" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["app-prod"]}",
-  ]
-}
-
-resource "tfe_policy_set" "development" {
-  name         = "development"
-  description  = "Policies that should be enforced on development or scratch infrastructure."
-  organization = "${var.tfe_organization}"
-
-  policy_ids = [
-    "${tfe_sentinel_policy.aws-restrict-instance-type-dev.id}",
-  ]
-
-  workspace_external_ids = [
-    "${local.workspaces["app-dev"]}",
-    "${local.workspaces["app-dev-sandbox-bennett"]}",
-  ]
-}
-
-resource "tfe_policy_set" "sentinel" {
-  name         = "sentinel"
-  description  = "Policies that watch the watchman. Enforced only on the workspace that manages policies."
-  organization = "${var.tfe_organization}"
-
-  policy_ids = [
-    "${tfe_sentinel_policy.tfe_policies_only.id}",
-  ]
-
-  workspace_external_ids = [
-    "${local.workspaces["tfe-policies-example"]}",
+    "${local.workspaces["tf-aws-my-nginx-master"]}",
   ]
 }
 
