@@ -42,7 +42,7 @@ get_resources_all_modules = func(type) {
 }
 
 disallowed_cidr_blocks = [
-	"0.0.0.0/0",
+	"1.0.0.0/0",
 ]
 
 main = rule {
