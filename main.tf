@@ -45,6 +45,7 @@ resource "tfe_policy_set" "global" {
   global       = true
 
   policy_ids = [
+    "${tfe_sentinel_policy.passthrough.id}",
     "${tfe_sentinel_policy.aws-restrict-instance-type2-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
@@ -133,6 +134,14 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
 
 resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
   name         = "aws-restrict-instance-type-default"
+  description  = "Limit AWS instances to approved list"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-instance-type-default.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
+resource "tfe_sentinel_policy" "aws-restrict-instance-type2-default" {
+  name         = "aws-restrict-instance-type2-default"
   description  = "Limit AWS instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-instance-type2-default.sentinel")}"
