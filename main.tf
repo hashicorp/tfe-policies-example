@@ -65,7 +65,7 @@ resource "tfe_policy_set" "production" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["tf-aws-my-nginx-master"]}",
+    "${local.workspaces["tf-aws-my-nginx"]}",
   ]
 }
 
