@@ -46,8 +46,6 @@ resource "tfe_policy_set" "global" {
 
   policy_ids = [
     "${tfe_sentinel_policy.passthrough.id}",
-    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
-    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.aws-restrict-instance-type2-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
@@ -61,6 +59,8 @@ resource "tfe_policy_set" "production" {
 
   policy_ids = [
     "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
+    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
   ]
 
   # Will fail until all cidr blocks mating 0.0.0.0/0 are removerd.
