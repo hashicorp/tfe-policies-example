@@ -46,7 +46,6 @@ resource "tfe_policy_set" "global" {
 
   policy_ids = [
     "${tfe_sentinel_policy.passthrough.id}",
-    "${tfe_sentinel_policy.aws-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
@@ -62,6 +61,7 @@ resource "tfe_policy_set" "production" {
 
   policy_ids = [
     "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
+    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
   ]
 
   workspace_external_ids = [
@@ -90,6 +90,13 @@ resource "tfe_sentinel_policy" "tfe_policies_only" {
 }
 
 # Networking policies:
+resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
+  name         = "aws-restrict-ingress-sg-rule-cidr-blocks"
+  description  = "Avoid nasty firewall mistakes (AWS version)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
+  enforce_mode = "hard-mandatory"
+}
 
 resource "tfe_sentinel_policy" "aws-block-allow-all-cidr" {
   name         = "aws-block-allow-all-cidr"
