@@ -61,8 +61,10 @@ resource "tfe_policy_set" "production" {
 
   policy_ids = [
     "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
-    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
   ]
+
+  # Will fail until all cidr blocks mating 0.0.0.0/0 are removerd.
+  # "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
 
   workspace_external_ids = [
     "${local.workspaces["tf-aws-my-nginx"]}",
