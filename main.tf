@@ -143,7 +143,7 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
 }
 
 resource "tfe_sentinel_policy" "aws-restrict-instance-type2-default" {
-  name         = "aws-restrict-instance-type-default2"
+  name         = "aws-restrict-instance-type2-default"
   description  = "Limit AWS instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-instance-type2-default.sentinel")}"
