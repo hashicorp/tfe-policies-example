@@ -45,9 +45,6 @@ resource "tfe_policy_set" "global" {
   global       = true
 
   policy_ids = [
-    "${tfe_sentinel_policy.passthrough.id}",
-    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
-    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
     "${tfe_sentinel_policy.aws-restrict-instance-type2-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
@@ -60,14 +57,14 @@ resource "tfe_policy_set" "production" {
   organization = "${var.tfe_organization}"
 
   policy_ids = [
+    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id},"
     "${tfe_sentinel_policy.aws-restrict-instance-type-prod.id}",
+    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
   ]
 
-  # Will fail until all cidr blocks mating 0.0.0.0/0 are removerd.
-  # "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
-
   workspace_external_ids = [
-    "${local.workspaces["tf-aws-my-nginx"]}",
+    "${local.workspaces["terraform-aws-instance-module"]}",
   ]
 }
 
@@ -136,14 +133,6 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
 
 resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
   name         = "aws-restrict-instance-type-default"
-  description  = "Limit AWS instances to approved list"
-  organization = "${var.tfe_organization}"
-  policy       = "${file("./aws-restrict-instance-type-default.sentinel")}"
-  enforce_mode = "soft-mandatory"
-}
-
-resource "tfe_sentinel_policy" "aws-restrict-instance-type2-default" {
-  name         = "aws-restrict-instance-type-default2"
   description  = "Limit AWS instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-instance-type2-default.sentinel")}"
