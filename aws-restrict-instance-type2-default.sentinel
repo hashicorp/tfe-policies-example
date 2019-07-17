@@ -84,6 +84,7 @@ validate_attribute_in_list = func(type, attribute, allowed_values) {
 # Allowed EC2 Instance Types
 # We don't include t2.nano or t2.micro to illustrate overriding failed policy
 allowed_types = [
+  "t2.micro",
   "t2.small",
   "t2.medium",
   "t2.large",
