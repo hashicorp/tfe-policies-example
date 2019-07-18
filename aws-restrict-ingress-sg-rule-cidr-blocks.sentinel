@@ -66,7 +66,7 @@ validate_sgr_cidr_blocks = func() {
             "has attributes, type and/or cidr_blocks that are computed.")
       # If you want computed values to cause the policy to fail,
       # uncomment the next line.
-      # validated = false
+      validated = false
     } else {
       # Validate that each SG rule does not have disallowed value
       # Since cidr_blocks is optional and could be computed,
