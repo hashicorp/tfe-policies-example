@@ -90,7 +90,7 @@ resource "tfe_sentinel_policy" "tfe_policies_only" {
 
 # Networking policies:
 resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
-  name         = "aws-restrict-ingress-sg-rule-NO-cidr-0.0.0.0"
+  name         = "aws-ingress-sg-rule-NO-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
