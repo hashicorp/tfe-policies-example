@@ -33,7 +33,6 @@ resource "tfe_policy_set" "global" {
   global       = true
 
   policy_ids = [
-    "${tfe_sentinel_policy.passthrough.id}",
     "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
     "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
     "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
@@ -52,7 +51,7 @@ resource "tfe_policy_set" "development" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["myapp_dev"]}",
+    "${local.workspaces["tf-aws-ecs-garget_dev"]}",
   ]
 }
 
