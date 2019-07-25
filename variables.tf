@@ -1,4 +1,3 @@
-
 variable "tfe_token" {}
 
 variable "tfe_hostname" {
@@ -13,7 +12,8 @@ variable "tfe_organization" {
 
 variable "prod_workspaces" {
   type = "list"
+
   default = [
-    my_workspace_prod1=_1
+    "my_workspace_prod1=_1",
   ]
 }
