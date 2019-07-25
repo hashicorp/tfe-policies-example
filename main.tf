@@ -51,7 +51,7 @@ resource "tfe_policy_set" "development" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["tf-aws-ecs-garget_dev"]}",
+    "${local.workspaces["tf-aws-ecs-fargate_dev"]}",
   ]
 }
 
