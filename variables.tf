@@ -12,7 +12,7 @@ variable "tfe_organization" {
 }
 
 variable "prod_workspaces" {
-  type = list
+  type = "list"
   default = [
     my_workspace_prod1=_1
   ]
