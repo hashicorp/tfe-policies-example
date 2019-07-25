@@ -1,26 +1,14 @@
 terraform {
   backend "remote" {
-    hostname = "app.terraform.io"
+    hostname = "${var.tfe_hostname}"
 
     #organization = "hashicorp-v2"
-    organization = "ppresto_ptfe"
+    organization = "${var.tfe_organization}"
 
     workspaces {
       name = "tfe-policies-example"
     }
   }
-}
-
-variable "tfe_token" {}
-
-variable "tfe_hostname" {
-  description = "The domain where your TFE is hosted."
-  default     = "app.terraform.io"
-}
-
-variable "tfe_organization" {
-  description = "The TFE organization to apply your changes to."
-  default     = "example_corp"
 }
 
 provider "tfe" {
