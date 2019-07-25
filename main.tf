@@ -55,6 +55,22 @@ resource "tfe_policy_set" "development" {
   ]
 }
 
+resource "tfe_policy_set" "production" {
+  name         = "Production"
+  description  = "Policies that should be enforced on production infrastructure."
+  organization = "${var.tfe_organization}"
+
+  policy_ids = [
+    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks-prod.id}",
+    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
+  ]
+
+  workspace_external_ids = [
+    "${local.workspaces["tf-aws-ecs-fargate_prod"]}",
+  ]
+}
+
 # Test/experimental policies:
 
 resource "tfe_sentinel_policy" "passthrough" {
@@ -75,9 +91,18 @@ resource "tfe_sentinel_policy" "tfe_policies_only" {
   enforce_mode = "hard-mandatory"
 }
 
-# Networking policies:
+# Network Policies Production
+resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks-prod" {
+  name         = "prod-aws-ingress-sg-NO-cidr-0.0.0.0"
+  description  = "Avoid nasty firewall mistakes (AWS version)"
+  organization = "${var.tfe_organization}"
+  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
+  enforce_mode = "soft-mandatory"
+}
+
+# Networking policies: Development
 resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
-  name         = "aws-ingress-sg-rule-NO-cidr-0.0.0.0"
+  name         = "dev-aws-ingress-sg-NO-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
