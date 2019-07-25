@@ -67,7 +67,7 @@ resource "tfe_policy_set" "production" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["tf-aws-ecs-fargate_prod"]}",
+    "${local.workspaces["tf-aws-ecs-fargate_master"]}",
   ]
 }
 
