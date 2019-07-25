@@ -40,9 +40,9 @@ resource "tfe_policy_set" "global" {
   ]
 }
 
-resource "tfe_policy_set" "production" {
-  name         = "production"
-  description  = "Policies that should be enforced on production infrastructure."
+resource "tfe_policy_set" "development" {
+  name         = "development"
+  description  = "Policies that should be enforced on development infrastructure."
   organization = "${var.tfe_organization}"
 
   policy_ids = [
@@ -52,7 +52,7 @@ resource "tfe_policy_set" "production" {
   ]
 
   workspace_external_ids = [
-    "${local.workspaces["terraform-aws-instance-module"]}",
+    "${local.workspaces["tfc-workspace-sandbox"]}",
   ]
 }
 
@@ -78,7 +78,7 @@ resource "tfe_sentinel_policy" "tfe_policies_only" {
 
 # Networking policies:
 resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
-  name         = "aws-restrict-ingress-sg-rule-cidr-blocks"
+  name         = "aws-ingress-sg-rule-NO-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
