@@ -96,7 +96,7 @@ resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks-prod" {
   name         = "prod-aws-ingress-sg-NO-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
-  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks-12.sentinel")}"
+  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
   enforce_mode = "soft-mandatory"
 }
 
@@ -105,7 +105,7 @@ resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
   name         = "dev-aws-ingress-sg-NO-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
-  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks-12.sentinel")}"
+  policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
   enforce_mode = "hard-mandatory"
 }
 
