@@ -33,9 +33,9 @@ resource "tfe_policy_set" "global" {
   global       = true
 
   policy_ids = [
-    "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
-    "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
-    "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
+    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
+    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
   ]
 }
 
@@ -45,9 +45,9 @@ resource "tfe_policy_set" "development" {
   organization = "${var.tfe_organization}"
 
   policy_ids = [
-    "${tfe_sentinel_policy.aws-restrict-ingress-sg-rule-cidr-blocks.id}",
-    "${tfe_sentinel_policy.azurerm-block-allow-all-cidr.id}",
-    "${tfe_sentinel_policy.gcp-block-allow-all-cidr.id}",
+    "${tfe_sentinel_policy.aws-restrict-instance-type-default.id}",
+    "${tfe_sentinel_policy.azurerm-restrict-vm-size.id}",
+    "${tfe_sentinel_policy.gcp-restrict-machine-type.id}",
   ]
 
   workspace_external_ids = [
@@ -80,7 +80,7 @@ resource "tfe_sentinel_policy" "tfe_policies_only" {
 
 # Networking policies: Development
 resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
-  name         = "dev-aws-ingress-sg-NO-cidr-0.0.0.0"
+  name         = "Sec-aws-ingress-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (AWS version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-ingress-sg-rule-cidr-blocks.sentinel")}"
@@ -88,7 +88,7 @@ resource "tfe_sentinel_policy" "aws-restrict-ingress-sg-rule-cidr-blocks" {
 }
 
 resource "tfe_sentinel_policy" "azurerm-block-allow-all-cidr" {
-  name         = "azurerm-block-allow-all-cidr"
+  name         = "Sec-azure-ingress-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (Azure version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./azurerm-block-allow-all-cidr.sentinel")}"
@@ -96,7 +96,7 @@ resource "tfe_sentinel_policy" "azurerm-block-allow-all-cidr" {
 }
 
 resource "tfe_sentinel_policy" "gcp-block-allow-all-cidr" {
-  name         = "gcp-block-allow-all-cidr"
+  name         = "Sec-gcp-ingress-cidr-0.0.0.0"
   description  = "Avoid nasty firewall mistakes (GCP version)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./gcp-block-allow-all-cidr.sentinel")}"
@@ -114,7 +114,7 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-dev" {
 }
 
 resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
-  name         = "aws-restrict-instance-type-prod"
+  name         = "Std-aws-restrict-inst-type-prod"
   description  = "Limit AWS instances to approved list (for prod infrastructure)"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-instance-type-prod.sentinel")}"
@@ -122,7 +122,7 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-prod" {
 }
 
 resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
-  name         = "aws-restrict-instance-type-default"
+  name         = "Std-aws-restrict-inst-type"
   description  = "Limit AWS instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./aws-restrict-instance-type-default.sentinel")}"
@@ -130,7 +130,7 @@ resource "tfe_sentinel_policy" "aws-restrict-instance-type-default" {
 }
 
 resource "tfe_sentinel_policy" "azurerm-restrict-vm-size" {
-  name         = "azurerm-restrict-vm-size"
+  name         = "Std-azure-restrict-inst-type"
   description  = "Limit Azure instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./azurerm-restrict-vm-size.sentinel")}"
@@ -138,7 +138,7 @@ resource "tfe_sentinel_policy" "azurerm-restrict-vm-size" {
 }
 
 resource "tfe_sentinel_policy" "gcp-restrict-machine-type" {
-  name         = "gcp-restrict-machine-type"
+  name         = "Std-gcp-restrict-inst-type"
   description  = "Limit GCP instances to approved list"
   organization = "${var.tfe_organization}"
   policy       = "${file("./gcp-restrict-machine-type.sentinel")}"
