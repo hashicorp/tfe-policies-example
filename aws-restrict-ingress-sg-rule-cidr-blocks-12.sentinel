@@ -94,5 +94,5 @@ sgrs_validated = validate_sgr_cidr_blocks()
 
 # Main rule
 main = rule {
-  sgrs_validated
+  sgrs_validated is true
 }
