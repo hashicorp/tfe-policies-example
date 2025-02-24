@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 import "tfplan"
 
 # Get an array of all resources of the given type (or an empty array).
