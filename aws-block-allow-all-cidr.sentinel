@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2018, 2026
+
 import "tfplan"
 
 # Get an array of all resources of the given type (or an empty array).

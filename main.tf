@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2018, 2026
+
 terraform {
   backend "remote" {
     hostname     = "app.terraform.io"
